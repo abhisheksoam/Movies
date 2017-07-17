@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upcoming_movies_title">Upcoming Movies</string>
+    <string name="popular_movies_title">Popular</string>
+</resources>
