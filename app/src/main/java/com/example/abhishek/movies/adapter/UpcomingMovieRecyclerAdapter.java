@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.abhishek.movies.R;
+import com.example.abhishek.movies._interface.ReceiveBitmapInterface;
+import com.example.abhishek.movies.asyncTask.DownloadImageTask;
 import com.example.abhishek.movies.model.MovieModel;
 import com.example.abhishek.movies.model.MovieModels;
 import com.squareup.picasso.Picasso;
@@ -26,12 +28,12 @@ import java.util.ArrayList;
  * Created by abhishek on 06/11/16.
  */
 
-public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingMovieRecyclerAdapter.ItemViewHolder> {
+public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingMovieRecyclerAdapter.ItemViewHolder> implements ReceiveBitmapInterface {
 
     private Context context;
     private LayoutInflater layoutInflater;
     private MovieModels movies;
-
+    ReceiveBitmapInterface receiveBitmapInterface;
     private String TAG = "UPCOMING_ADAPTER";
 
     public UpcomingMovieRecyclerAdapter(Context context, MovieModels movieModel){
@@ -64,7 +66,6 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         backgroundPath = model.getBackdropPath();
         Log.e(TAG,movieName);
 //        holder.movieNameTextView.setText(movieName);
-
         String url = "http://image.tmdb.org/t/p/w500" + backgroundPath;
         Log.e(TAG,url);
 
@@ -73,6 +74,9 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
 //            imagesPresent[position] = true;
 //        }
         Picasso.with(context).load(url).into(holder.movieImageView);
+//        DownloadImageTask task = new DownloadImageTask();
+//        task.setReceiveBitmapInterface(this);
+//        task.execute(url);
 
 //        Glide.with(context).load(url).into(holder.movieImageView);
 
@@ -83,6 +87,13 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         return movies.list.size();
     }
 
+    @Override
+    public void onReceiveBitmap(Bitmap bitmap) {
+        if(bitmap!=null){
+
+        }
+    }
+
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView movieImageView;
 //        TextView movieNameTextView;
@@ -91,6 +102,14 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
             super(itemView);
             movieImageView = (ImageView) itemView.findViewById(R.id.upcoming_movie_image);
 //            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    return false;
+                }
+            });
+
         }
     }
 }

@@ -23,7 +23,7 @@ import java.util.Scanner;
  * Created by abhishek on 02/11/16.
  */
 
-public class CustomAsyncTask extends AsyncTask<String,Void,String> {
+public class CustomAsyncTask extends AsyncTask<String,Integer,String> {
 
     /**
      * Variable for storing to make calculations
@@ -36,7 +36,9 @@ public class CustomAsyncTask extends AsyncTask<String,Void,String> {
      * Android Widgets
      */
     private CustomAsyncInterface customAsyncInterface;
+    private ProgressDialog progressDialog;
     private Context context;
+
 
 
     @Override
@@ -73,6 +75,17 @@ public class CustomAsyncTask extends AsyncTask<String,Void,String> {
     protected void onPreExecute() {
         super.onPreExecute();
         Log.e(TAG,"ON PRE EXECUTE FUNCTION");
+        if(context!=null){
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading");
+            progressDialog.show();
+
+        }
+    }
+
+    protected void onProgressUpdate(Integer... progress) {
+        Log.e(TAG,"In Progress Update ");
+        Log.e(TAG,progress[0]+" ");
     }
 
     @Override
@@ -80,6 +93,9 @@ public class CustomAsyncTask extends AsyncTask<String,Void,String> {
         super.onPostExecute(jsonString);
         Log.e(TAG,"ON POST EXECUTE FUNCTION");
         Log.e(TAG,jsonString);
+        if(context!=null){
+            progressDialog.dismiss();
+        }
         if(customAsyncInterface!=null){
             customAsyncInterface.onDataReceived(jsonString,TYPE);
         }
