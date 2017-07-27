@@ -56,7 +56,7 @@ public class NowPlayingMovieRecyclerAdapter extends RecyclerView.Adapter<NowPlay
         }
 
         if(movieName!=null){
-            holder.movieNameTextView.setText(movieName);
+//            holder.movieNameTextView.setText(movieName);
         }
         if(backgroundPath!=null){
             Picasso.with(context).load("http://image.tmdb.org/t/p/w500" + backgroundPath).into(holder.movieImageView);
@@ -79,7 +79,7 @@ public class NowPlayingMovieRecyclerAdapter extends RecyclerView.Adapter<NowPlay
         {
             super(itemView);
             movieImageView = (ImageView) itemView.findViewById(R.id.upcoming_movie_image);
-            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
+//            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
         }
     }
 }

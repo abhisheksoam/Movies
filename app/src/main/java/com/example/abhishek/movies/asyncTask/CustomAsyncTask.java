@@ -79,6 +79,7 @@ public class CustomAsyncTask extends AsyncTask<String,Void,String> {
     protected void onPostExecute(String jsonString) {
         super.onPostExecute(jsonString);
         Log.e(TAG,"ON POST EXECUTE FUNCTION");
+        Log.e(TAG,jsonString);
         if(customAsyncInterface!=null){
             customAsyncInterface.onDataReceived(jsonString,TYPE);
         }

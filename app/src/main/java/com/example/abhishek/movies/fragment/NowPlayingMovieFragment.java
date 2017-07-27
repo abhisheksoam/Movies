@@ -1,10 +1,10 @@
 package com.example.abhishek.movies.fragment;
 
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,30 +25,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by abhishek on 16/07/17.
+ * Created by abhishek on 17/07/17.
  */
 
-public class PopularMovieFragment extends Fragment implements CustomAsyncInterface{
-
+public class NowPlayingMovieFragment extends Fragment implements CustomAsyncInterface {
     // Variables
-    MovieModels popularMovies;
-    private static String POPULAR_KEYWORD = "POPULAR";
-    private static String TAG = "POPULAR FRAGMENT";
+    MovieModels nowPlayingMovies;
+    private static String NOW_PLAYING_KEYWORD = "NOW_PLAYING";
+    private static String TAG = "NOW_PLAYING_FRAGMENT";
 
     // Widgets
-    private RecyclerView popularRecyclerView;
-    private UpcomingMovieRecyclerAdapter popularMoviesAdapter;
-    private GridLayoutManager linearLayoutManager;
+    private RecyclerView nowPlayingRecyclerView;
+    private UpcomingMovieRecyclerAdapter nowPlayingMoviesAdapter;
+    private GridLayoutManager gridLayoutManager;
+    
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_popular_movie,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_now_playing_movie,container,false);
 
         return v;
     }
-
     private void initWidget() {
-        popularRecyclerView = (RecyclerView) getActivity().findViewById(R.id.popular_recycler_view);
-        linearLayoutManager = new GridLayoutManager(getActivity(),2);
+        nowPlayingRecyclerView = (RecyclerView) getActivity().findViewById(R.id.now_playing_recycler_view);
+        gridLayoutManager = new GridLayoutManager(getActivity(),2);
     }
 
     @Override
@@ -59,10 +59,10 @@ public class PopularMovieFragment extends Fragment implements CustomAsyncInterfa
     }
 
     private void callTask() {
-        CustomAsyncTask popularAsyncTask = new CustomAsyncTask();
-        popularAsyncTask.setContext(getActivity());
-        popularAsyncTask.setCustomAsyncInterface(this);
-        popularAsyncTask.execute(Constants.getPOPULAR(),POPULAR_KEYWORD);
+        CustomAsyncTask nowPlayingAsyncTask = new CustomAsyncTask();
+        nowPlayingAsyncTask.setContext(getActivity());
+        nowPlayingAsyncTask.setCustomAsyncInterface(this);
+        nowPlayingAsyncTask.execute(Constants.getNowPlaying(), NOW_PLAYING_KEYWORD);
     }
 
     @Override
@@ -74,15 +74,15 @@ public class PopularMovieFragment extends Fragment implements CustomAsyncInterfa
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(type.equals(POPULAR_KEYWORD)){
-            popularMovies = new MovieModels(type);
+        if(type.equals(NOW_PLAYING_KEYWORD)){
+            nowPlayingMovies = new MovieModels(type);
             try {
                 JSONArray results = object.getJSONArray("results");
                 Log.e(TAG,"Size Of JSON ARRAY"+ results.length());
 
-                popularMovies.setCurrentPage(object.getInt("page"));
-                popularMovies.setTotalPage(object.getInt("total_pages"));
-                popularMovies.setTotalResults(object.getInt("total_results"));
+                nowPlayingMovies.setCurrentPage(object.getInt("page"));
+                nowPlayingMovies.setTotalPage(object.getInt("total_pages"));
+                nowPlayingMovies.setTotalResults(object.getInt("total_results"));
 
                 for(int i=0;i<results.length();i++){
                     JSONObject obj = results.getJSONObject(i);
@@ -105,17 +105,17 @@ public class PopularMovieFragment extends Fragment implements CustomAsyncInterfa
                     for(int j=0;j<genreArray.length();j++){
                         movie.genreIds.add(genreArray.getInt(j));
                     }
-                    popularMovies.list.add(movie);
+                    nowPlayingMovies.list.add(movie);
                 }
 
-                Log.e(TAG,"Size Of Movies list"+ popularMovies.list.size());
+                Log.e(TAG,"Size Of Movies list"+ nowPlayingMovies.list.size());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            popularMoviesAdapter = new UpcomingMovieRecyclerAdapter(getActivity(),popularMovies);
-            popularRecyclerView.setAdapter(popularMoviesAdapter);
-            popularRecyclerView.setLayoutManager(linearLayoutManager);
-            popularRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
+            nowPlayingMoviesAdapter = new UpcomingMovieRecyclerAdapter(getActivity(), nowPlayingMovies);
+            nowPlayingRecyclerView.setAdapter(nowPlayingMoviesAdapter);
+            nowPlayingRecyclerView.setLayoutManager(gridLayoutManager);
+            nowPlayingRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
         }
     }
 }

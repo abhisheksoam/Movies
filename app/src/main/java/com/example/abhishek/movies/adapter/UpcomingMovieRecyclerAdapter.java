@@ -1,6 +1,7 @@
 package com.example.abhishek.movies.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.abhishek.movies.R;
 import com.example.abhishek.movies.model.MovieModel;
 import com.example.abhishek.movies.model.MovieModels;
@@ -35,9 +38,9 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         Log.e(TAG,"Inside constuctor");
         this.context = context;
         this.movies = movieModel;
-        Log.e(TAG,movieModel.toString());
         layoutInflater =  LayoutInflater.from(context);
     }
+
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,6 +51,8 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
+        Log.e(TAG,"Bind view holder");
+        holder.setIsRecyclable(false);
         MovieModel model = movies.list.get(position);
 
         String movieName;
@@ -58,8 +63,18 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         posterPath = model.getPosterPath();
         backgroundPath = model.getBackdropPath();
         Log.e(TAG,movieName);
-        holder.movieNameTextView.setText(movieName);
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w500" + backgroundPath).into(holder.movieImageView);
+//        holder.movieNameTextView.setText(movieName);
+
+        String url = "http://image.tmdb.org/t/p/w500" + backgroundPath;
+        Log.e(TAG,url);
+
+//        if(!imagesPresent[position]){
+//            Picasso.with(context).load(url).into(holder.movieImageView);
+//            imagesPresent[position] = true;
+//        }
+        Picasso.with(context).load(url).into(holder.movieImageView);
+
+//        Glide.with(context).load(url).into(holder.movieImageView);
 
     }
 
@@ -70,12 +85,12 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView movieImageView;
-        TextView movieNameTextView;
+//        TextView movieNameTextView;
         public ItemViewHolder(View itemView)
         {
             super(itemView);
             movieImageView = (ImageView) itemView.findViewById(R.id.upcoming_movie_image);
-            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
+//            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
         }
     }
 }

@@ -29,18 +29,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class HomeActivity extends AppCompatActivity implements CustomAsyncInterface {
+public class HomeActivity extends AppCompatActivity  {
 
-    private static String UPCOMING_KEYWORD = "UPCOMING";
-    private static String NOW_PLAYING_KEYWORD = "NOW PLAYING";
-    private static String POPULAR_KEYWORD = "POPULAR";
-    private static String TAG = "HOME ACTIVITY";
+
+
     /**
      * Variables
      */
-    private MovieModels upcomingMovies;
-    private MovieModels popularMovies;
-    private MovieModels nowPlayingMovies;
+    private static String TAG = "HOME ACTIVITY";
 
     /**
      *  Widgets Variable Declaration
@@ -61,7 +57,6 @@ public class HomeActivity extends AppCompatActivity implements CustomAsyncInterf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        callTask();
 
         ActionBar actionBar =  getSupportActionBar();
         viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -70,7 +65,6 @@ public class HomeActivity extends AppCompatActivity implements CustomAsyncInterf
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
@@ -84,164 +78,14 @@ public class HomeActivity extends AppCompatActivity implements CustomAsyncInterf
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
-//        View view = navigationView.inflateHeaderView(R.layout.navigation_header);
-//        TextView textview = (TextView) view.findViewById(R.id.username);
+        adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
+        smartTabLayout = (TabLayout) findViewById(R.id.tabs);
+        smartTabLayout.setupWithViewPager(viewPager);
 
 
 
     }
-
-    private void callTask() {
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading...");
-        progressDialog.setMessage("Please wait!");
-        progressDialog.show();
-        CustomAsyncTask upcomingAsyncTask = new CustomAsyncTask();
-        upcomingAsyncTask.setContext(this);
-        upcomingAsyncTask.setCustomAsyncInterface(this);
-        upcomingAsyncTask.execute(Constants.getUPCOMING(),UPCOMING_KEYWORD);
-
-        CustomAsyncTask nowPlayingAsyncTask = new CustomAsyncTask();
-        nowPlayingAsyncTask.setContext(this);
-        nowPlayingAsyncTask.setCustomAsyncInterface(this);
-        nowPlayingAsyncTask.execute(Constants.getNowPlaying(),NOW_PLAYING_KEYWORD);
-
-        CustomAsyncTask popularAsyncTask = new CustomAsyncTask();
-        popularAsyncTask.setContext(this);
-        popularAsyncTask.setCustomAsyncInterface(this);
-        popularAsyncTask.execute(Constants.getPOPULAR(),POPULAR_KEYWORD);
-
-    }
-
-    @Override
-    public void onDataReceived(String data,String type) {
-        Log.e(TAG,data.toString());
-        if(data!=null){
-            storeData(data,type);
-            if(upcomingMovies != null && popularMovies != null && nowPlayingMovies != null){
-                progressDialog.dismiss();
-
-                adapter = new HomeViewPagerAdapter(this);
-                adapter.setNowplayingMovies(nowPlayingMovies);
-                adapter.setPopularMovies(popularMovies);
-                adapter.setUpcomingMovies(upcomingMovies);
-                viewPager.setAdapter(adapter);
-                smartTabLayout = (TabLayout) findViewById(R.id.tabs);
-                smartTabLayout.setupWithViewPager(viewPager);
-            }
-        }
-    }
-
-    private void storeData(String data, String type) {
-        JSONObject object = null;
-        try {
-            object = new JSONObject(data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(type.equals(UPCOMING_KEYWORD)){
-            upcomingMovies = new MovieModels(type);
-            try {
-                JSONArray results = object.getJSONArray("results");
-                upcomingMovies.setCurrentPage(object.getInt("page"));
-                upcomingMovies.setTotalPage(object.getInt("total_pages"));
-                upcomingMovies.setTotalResults(object.getInt("total_results"));
-
-                for(int i=0;i<results.length();i++){
-                    JSONObject obj = results.getJSONObject(i);
-                    MovieModel movie = new MovieModel();
-                    movie.setAdult(obj.optString("adult"));
-                    movie.setBackdropPath(obj.optString("backdrop_path"));
-                    movie.setId(obj.optInt("id"));
-                    movie.setOriginalLanguage(obj.optString("original_language"));
-                    movie.setPopularity(obj.optInt("popularity"));
-                    movie.setOverview(obj.optString("overview"));
-                    movie.setReleaseDate(obj.optString("release_date"));
-                    movie.setTitle(obj.optString("title"));
-                    movie.setOriginalTitle(obj.optString("original_title"));
-                    movie.setPosterPath(obj.optString("poster_path"));
-                    movie.setVoteAverage(obj.optInt("vote_average"));
-                    movie.setVoteCount(obj.optInt("vote_count"));
-
-                    JSONArray genreArray = obj.optJSONArray("genre_ids");
-                    for(int j=0;j<obj.length();j++){
-                        movie.genreIds.add(genreArray.getInt(j));
-                    }
-                    upcomingMovies.list.add(movie);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }else if(type.equals(POPULAR_KEYWORD)){
-            popularMovies = new MovieModels(type);
-            try {
-                JSONArray results = object.getJSONArray("results");
-                popularMovies.setCurrentPage(object.getInt("page"));
-                popularMovies.setTotalPage(object.getInt("total_pages"));
-                popularMovies.setTotalResults(object.getInt("total_results"));
-
-                for(int i=0;i<results.length();i++){
-                    JSONObject obj = results.getJSONObject(i);
-                    MovieModel movie = new MovieModel();
-                    movie.setAdult(obj.optString("adult"));
-                    movie.setBackdropPath(obj.optString("backdrop_path"));
-                    movie.setId(obj.optInt("id"));
-                    movie.setOriginalLanguage(obj.optString("original_language"));
-                    movie.setPopularity(obj.optInt("popularity"));
-                    movie.setOverview(obj.optString("overview"));
-                    movie.setReleaseDate(obj.optString("release_date"));
-                    movie.setTitle(obj.optString("title"));
-                    movie.setOriginalTitle(obj.optString("original_title"));
-                    movie.setPosterPath(obj.optString("poster_path"));
-                    movie.setVoteAverage(obj.optInt("vote_average"));
-                    movie.setVoteCount(obj.optInt("vote_count"));
-
-                    JSONArray genreArray = obj.optJSONArray("genre_ids");
-                    for(int j=0;j<obj.length();j++){
-                        movie.genreIds.add(genreArray.getInt(j));
-                    }
-                    popularMovies.list.add(movie);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }else if(type.equals(NOW_PLAYING_KEYWORD)){
-            nowPlayingMovies = new MovieModels(type);
-            try {
-                JSONArray results = object.getJSONArray("results");
-                nowPlayingMovies.setCurrentPage(object.getInt("page"));
-                nowPlayingMovies.setTotalPage(object.getInt("total_pages"));
-                nowPlayingMovies.setTotalResults(object.getInt("total_results"));
-
-                for(int i=0;i<results.length();i++){
-                    JSONObject obj = results.getJSONObject(i);
-                    MovieModel movie = new MovieModel();
-                    movie.setAdult(obj.optString("adult"));
-                    movie.setBackdropPath(obj.optString("backdrop_path"));
-                    movie.setId(obj.optInt("id"));
-                    movie.setOriginalLanguage(obj.optString("original_language"));
-                    movie.setPopularity(obj.optInt("popularity"));
-                    movie.setOverview(obj.optString("overview"));
-                    movie.setReleaseDate(obj.optString("release_date"));
-                    movie.setTitle(obj.optString("title"));
-                    movie.setOriginalTitle(obj.optString("original_title"));
-                    movie.setPosterPath(obj.optString("poster_path"));
-                    movie.setVoteAverage(obj.optInt("vote_average"));
-                    movie.setVoteCount(obj.optInt("vote_count"));
-
-                    JSONArray genreArray = obj.optJSONArray("genre_ids");
-                    for(int j=0;j<obj.length();j++){
-                        movie.genreIds.add(genreArray.getInt(j));
-                    }
-                    nowPlayingMovies.list.add(movie);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
 }

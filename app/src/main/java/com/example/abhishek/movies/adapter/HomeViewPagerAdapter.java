@@ -16,6 +16,9 @@ import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.CustomAsyncInterface;
 import com.example.abhishek.movies.appDetails.Constants;
 import com.example.abhishek.movies.asyncTask.CustomAsyncTask;
+import com.example.abhishek.movies.fragment.NowPlayingMovieFragment;
+import com.example.abhishek.movies.fragment.PopularMovieFragment;
+import com.example.abhishek.movies.fragment.UpcomingMovieFragment;
 import com.example.abhishek.movies.model.MovieModels;
 import com.example.abhishek.movies.utility.HorizontalItemDecoration;
 
@@ -31,13 +34,10 @@ import java.util.Collections;
 public class HomeViewPagerAdapter extends FragmentPagerAdapter {
 
     private static final String TAG = "HOME_VIEW_PAGER_ADAPTER";
-    private Context context;
 
-    public HomeViewPagerAdapter(Context context, FragmentManager fm) {
+    public HomeViewPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
     }
-
 
     @Override
     public Fragment getItem(int position) {
@@ -45,9 +45,10 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new PopularMovieFragment();
             case 1:
-                return new NowPlayingMovieFragment();
+                    return new UpcomingMovieFragment();
             case 2:
-                return new UpcomingMovieFragment();
+                return new NowPlayingMovieFragment();
+
             default:
                 return null;
         }
@@ -66,11 +67,9 @@ public class HomeViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "POPULAR";
             case 1:
-                return "NOW PLAYING";
-            case 2:
                 return "UPCOMING";
-            case 3:
-                return "";
+            case 2:
+                return "NOW PLAYING";
 
             default:
                 return null;
