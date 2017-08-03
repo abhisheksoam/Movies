@@ -15,7 +15,7 @@ public class Constants {
     private final String SSL = "https";
     private final String NO_SSL = "http";
     private final String API_VERSION = "3/";
-    private static String mainServer = "https://api.themoviedb.org/";
+    private static String mainServer = "https://api.themoviedb.org/3/";
     /**
      *  URL String for getting Popular URL
      */
@@ -45,7 +45,7 @@ public class Constants {
         return SEARCH;
     }
 
-    private static final String SEARCH = mainServer+ "search/multi/?api_key=a0c307832b6d7d9d4fcf069b911f90c0&query=";
+    private static final String SEARCH = "https://api.themoviedb.org/3/search/movie?api_key=a0c307832b6d7d9d4fcf069b911f90c0&query=";
     //For Searching Movies , TV Shows , Person
     private static final String SEARCH_EVERYTHING = "search/multi";
 

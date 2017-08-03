@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.abhishek.movies._interface.CustomAsyncInterface;
+import com.example.abhishek.movies.activity.SearchActivity;
 import com.example.abhishek.movies.activity.UniversalDrawerActivity;
 import com.example.abhishek.movies.adapter.HomeViewPagerAdapter;
 //import com.example.abhishek.movies.adapter.UpcomingMovieRecyclerAdapter;
@@ -38,7 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements CustomAsyncInterface {
 
 
     /**
@@ -64,14 +65,12 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.e(TAG,"On Create");
         super.onCreate(savedInstanceState);
-        handleIntent(getIntent());
-//        LayoutInflater inflater = (LayoutInflater) this
-//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View contentView = inflater.inflate(R.layout.activity_home, null, false);
         setContentView(R.layout.activity_home);
+        handleIntent(getIntent());
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        drawer.addView(contentView,0);
+
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
@@ -79,6 +78,11 @@ public class HomeActivity extends AppCompatActivity {
         smartTabLayout = (TabLayout) findViewById(R.id.tabs);
         smartTabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
     }
 
     @Override
@@ -102,7 +106,28 @@ public class HomeActivity extends AppCompatActivity {
         Log.e(TAG,"Inside Handle Intent");
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.e(TAG,query);
+            Log.e(TAG,"Action search "+ query);
+            callTask(query);
+        }
+
+    }
+
+    private void callTask(String query) {
+        CustomAsyncTask searchAsyncTask = new CustomAsyncTask();
+        searchAsyncTask.setContext(this);
+        searchAsyncTask.setCustomAsyncInterface(this);
+        searchAsyncTask.execute(Constants.getSEARCH()+query,"SEARCH");
+    }
+
+
+    @Override
+    public void onDataReceived(String data, String type) {
+        Log.e(TAG,"API sting "+ data);
+        if(type.equals("SEARCH")){
+            Intent intent = new Intent();
+            intent.putExtra("json_string",data);
+            intent.setClass(this, SearchActivity.class);
+            startActivity(intent);
         }
     }
 }

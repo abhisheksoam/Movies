@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.onRecyclerItemClick;
 import com.example.abhishek.movies.model.MovieModel;
+import com.example.abhishek.movies.model.MovieModels;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,38 +25,40 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
 
     private LayoutInflater inflater;
     private Context context;
-    private ArrayList<MovieModel> list;
-
+    private MovieModels searchModel;
 
 
     private onRecyclerItemClick onRecyclerItemClick;
 
-    public SearchAdapter(Context context){
+    public SearchAdapter(Context context, MovieModels movieModels){
         this.context = context;
         inflater =  LayoutInflater.from(context);
+        this.searchModel = movieModels;
     }
+
     @Override
     public SearchAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.search_screen_row_item,null,false);
+        View view = inflater.inflate(R.layout.search_screen_row_item_ex,null,false);
         ItemViewHolder holder = new ItemViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(SearchAdapter.ItemViewHolder holder, int position) {
-        MovieModel model = list.get(position);
+        MovieModel model = searchModel.list.get(position);
         String backgroundPath = model.getBackdropPath();
-        String url = "http://image.tmdb.org/t/p/w300" + backgroundPath;
+        String posterPath = model.getPosterPath();
+        String url = "http://image.tmdb.org/t/p/w300" + posterPath;
         Picasso.with(context).load(url).into(holder.movieThumbnail);
         holder.movieName.setText(model.getOriginalTitle());
-        holder.movieYear.setText(model.getReleaseDate());
+        holder.movieYear.setText(model.getReleaseDate().substring(0,4));
         holder.movieDescription.setText(model.getOverview());
         holder.movieLanguage.setText("Language -"+ model.getOriginalLanguage());
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return searchModel.list.size();
     }
 
 

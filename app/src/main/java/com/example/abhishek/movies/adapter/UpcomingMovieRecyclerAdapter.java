@@ -65,21 +65,9 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         movieName = model.getOriginalTitle();
         posterPath = model.getPosterPath();
         backgroundPath = model.getBackdropPath();
-        Log.e(TAG,movieName);
 //        holder.movieNameTextView.setText(movieName);
         String url = "http://image.tmdb.org/t/p/w300" + backgroundPath;
-        Log.e(TAG,url);
-
-//        if(!imagesPresent[position]){
-//            Picasso.with(context).load(url).into(holder.movieImageView);
-//            imagesPresent[position] = true;
-//        }
         Picasso.with(context).load(url).into(holder.movieImageView);
-//        DownloadImageTask task = new DownloadImageTask();
-//        task.setReceiveBitmapInterface(this);
-//        task.execute(url);
-
-//        Glide.with(context).load(url).into(holder.movieImageView);
 
     }
 
