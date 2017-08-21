@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
 
 
 /**
@@ -116,6 +117,15 @@ public class SearchActivity extends AppCompatActivity implements onRecyclerItemC
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.e(TAG,"On back pressed");
+
     }
 
     @Override

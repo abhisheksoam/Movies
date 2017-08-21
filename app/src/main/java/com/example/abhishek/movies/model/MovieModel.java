@@ -1,5 +1,7 @@
 package com.example.abhishek.movies.model;
 
+import android.support.v4.util.Pair;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -24,6 +26,32 @@ public class MovieModel implements Serializable {
     private String releaseDate;
     private String adult;
     private String video;
+
+    // Extra Field when specifically fetched a movie id Detail
+    /**
+     *  One async task
+     */
+    private String imdbId;
+    private Integer revenue;
+    private Integer runtime;
+    private Integer budget;
+    private ArrayList<Pair<String,String>> productionCountries;
+    private ArrayList<Pair<String,Integer>> productionCompanies;
+    private ArrayList<Pair<String,String>> spokenLanguages;
+    private ArrayList<Pair<String,Integer>> genre;
+    private ArrayList<Pair<String,Integer>> keywords;
+
+    // Models
+    /**
+     *  Will require 5 Different Threads for fetching
+     */
+    private CastModels movieCast;
+    private MovieImages movieImages;
+    private ArrayList<Trailer> movieTrailer;
+    private ArrayList<Integer> recommendationMovies;
+    private ArrayList<Integer> similarMovies;
+
+
 
     public MovieModel(){
         genreIds =  new ArrayList<>();

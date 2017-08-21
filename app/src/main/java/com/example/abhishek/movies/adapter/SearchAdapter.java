@@ -16,6 +16,7 @@ import com.example.abhishek.movies.model.MovieModels;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by abhishek on 31/07/17.
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHolder>  {
 
+    private static String TAG = "SEARCH_ADAPTER";
     private LayoutInflater inflater;
     private Context context;
     private MovieModels searchModel;
@@ -53,7 +55,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
         holder.movieName.setText(model.getOriginalTitle());
         holder.movieYear.setText(model.getReleaseDate().substring(0,4));
         holder.movieDescription.setText(model.getOverview());
-        holder.movieLanguage.setText("Language -"+ model.getOriginalLanguage());
+        Locale locale = new Locale(model.getOriginalLanguage());
+        Log.e(TAG,"MOVIE LANGUAGE-> "+model.getOriginalLanguage());
+        holder.movieLanguage.setText("Language :"+ locale.getDisplayLanguage());
     }
 
     @Override
