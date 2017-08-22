@@ -27,10 +27,8 @@ public class MovieModel implements Serializable {
     private String adult;
     private String video;
 
-    // Extra Field when specifically fetched a movie id Detail
-    /**
-     *  One async task
-     */
+    // Extra Field
+
     private String imdbId;
     private Integer revenue;
     private Integer runtime;
@@ -42,9 +40,7 @@ public class MovieModel implements Serializable {
     private ArrayList<Pair<String,Integer>> keywords;
 
     // Models
-    /**
-     *  Will require 5 Different Threads for fetching
-     */
+
     private CastModels movieCast;
     private MovieImages movieImages;
     private ArrayList<Trailer> movieTrailer;
@@ -159,6 +155,127 @@ public class MovieModel implements Serializable {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+
+    public ArrayList<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(ArrayList<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
+    public String getImdbId() {
+        return imdbId;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    public Integer getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(Integer revenue) {
+        this.revenue = revenue;
+    }
+
+    public Integer getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
+    }
+
+    public Integer getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Integer budget) {
+        this.budget = budget;
+    }
+
+    public ArrayList<Pair<String, String>> getProductionCountries() {
+        return productionCountries;
+    }
+
+    public void setProductionCountries(ArrayList<Pair<String, String>> productionCountries) {
+        this.productionCountries = productionCountries;
+    }
+
+    public ArrayList<Pair<String, Integer>> getProductionCompanies() {
+        return productionCompanies;
+    }
+
+    public void setProductionCompanies(ArrayList<Pair<String, Integer>> productionCompanies) {
+        this.productionCompanies = productionCompanies;
+    }
+
+    public ArrayList<Pair<String, String>> getSpokenLanguages() {
+        return spokenLanguages;
+    }
+
+    public void setSpokenLanguages(ArrayList<Pair<String, String>> spokenLanguages) {
+        this.spokenLanguages = spokenLanguages;
+    }
+
+    public ArrayList<Pair<String, Integer>> getGenre() {
+        return genre;
+    }
+
+    public void setGenre(ArrayList<Pair<String, Integer>> genre) {
+        this.genre = genre;
+    }
+
+    public ArrayList<Pair<String, Integer>> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(ArrayList<Pair<String, Integer>> keywords) {
+        this.keywords = keywords;
+    }
+
+    public CastModels getMovieCast() {
+        return movieCast;
+    }
+
+    public void setMovieCast(CastModels movieCast) {
+        this.movieCast = movieCast;
+    }
+
+    public MovieImages getMovieImages() {
+        return movieImages;
+    }
+
+    public void setMovieImages(MovieImages movieImages) {
+        this.movieImages = movieImages;
+    }
+
+    public ArrayList<Trailer> getMovieTrailer() {
+        return movieTrailer;
+    }
+
+    public void setMovieTrailer(ArrayList<Trailer> movieTrailer) {
+        this.movieTrailer = movieTrailer;
+    }
+
+    public ArrayList<Integer> getRecommendationMovies() {
+        return recommendationMovies;
+    }
+
+    public void setRecommendationMovies(ArrayList<Integer> recommendationMovies) {
+        this.recommendationMovies = recommendationMovies;
+    }
+
+    public ArrayList<Integer> getSimilarMovies() {
+        return similarMovies;
+    }
+
+    public void setSimilarMovies(ArrayList<Integer> similarMovies) {
+        this.similarMovies = similarMovies;
     }
 
 

@@ -131,6 +131,8 @@ public class SearchActivity extends AppCompatActivity implements onRecyclerItemC
     @Override
     public void onClick(View v, int position) {
         Intent intent = new Intent(this, MovieScreen.class);
+        intent.putExtra("MovieDetail",searchedMovies.list.get(position));
+
         startActivity(intent);
     }
 }
