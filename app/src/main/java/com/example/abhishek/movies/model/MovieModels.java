@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 
 public class MovieModels {
+
+
     private String type;
     public ArrayList<MovieModel> list;
     private Integer currentPage;
@@ -43,6 +45,5 @@ public class MovieModels {
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
-
 
 }

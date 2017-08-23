@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.ReceiveBitmapInterface;
+import com.example.abhishek.movies.activity.MovieScreen;
 import com.example.abhishek.movies.activity.SearchActivity;
 import com.example.abhishek.movies.model.MovieModel;
 import com.example.abhishek.movies.model.MovieModels;
@@ -88,7 +89,9 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
                 @Override
                 public void onClick(View v) {
                     Log.e(TAG,"On clicked");
-                    context.startActivity(new Intent(context, SearchActivity.class));
+                    Intent intent = new Intent(context, MovieScreen.class);
+                    intent.putExtra("MovieDetail",movies.list.get(getAdapterPosition()));
+                    context.startActivity(intent);
                 }
             });
 //            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);

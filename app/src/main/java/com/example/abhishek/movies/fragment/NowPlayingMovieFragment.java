@@ -11,11 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.CustomAsyncInterface;
+import com.example.abhishek.movies._interface.RestCallResponseInterface;
 import com.example.abhishek.movies.adapter.UpcomingMovieRecyclerAdapter;
 import com.example.abhishek.movies.appDetails.Constants;
 import com.example.abhishek.movies.asyncTask.CustomAsyncTask;
+import com.example.abhishek.movies.asyncTask.CustomRequest;
+import com.example.abhishek.movies.asyncTask.RestCallController;
 import com.example.abhishek.movies.model.MovieModel;
 import com.example.abhishek.movies.model.MovieModels;
 import com.example.abhishek.movies.utility.SpaceItemDecoration;
@@ -28,7 +34,7 @@ import org.json.JSONObject;
  * Created by abhishek on 17/07/17.
  */
 
-public class NowPlayingMovieFragment extends Fragment implements CustomAsyncInterface {
+public class NowPlayingMovieFragment extends Fragment implements  Response.ErrorListener, RestCallResponseInterface {
     // Variables
     MovieModels nowPlayingMovies;
     private static String NOW_PLAYING_KEYWORD = "NOW_PLAYING";
@@ -59,13 +65,12 @@ public class NowPlayingMovieFragment extends Fragment implements CustomAsyncInte
     }
 
     private void callTask() {
-        CustomAsyncTask nowPlayingAsyncTask = new CustomAsyncTask();
-        nowPlayingAsyncTask.setContext(getActivity());
-        nowPlayingAsyncTask.setCustomAsyncInterface(this);
-        nowPlayingAsyncTask.execute(Constants.getNowPlaying(), NOW_PLAYING_KEYWORD);
+        CustomRequest customRequest = new CustomRequest(Request.Method.GET,Constants.getNowPlaying(),null,this,NOW_PLAYING_KEYWORD,getActivity());
+        customRequest.setRestCallResponseInterface(this);
+        RestCallController.getInstance().addToRequestQueue(customRequest);
     }
 
-    @Override
+
     public void onDataReceived(String data, String type) {
         Log.e(TAG,"On Data Received");
         JSONObject object = null;
@@ -117,5 +122,16 @@ public class NowPlayingMovieFragment extends Fragment implements CustomAsyncInte
             nowPlayingRecyclerView.setLayoutManager(gridLayoutManager);
             nowPlayingRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
         }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+
+    }
+
+    @Override
+    public void onResponse(String type, JSONObject response) {
+        Log.e(TAG,"Now playing response arrived");
+        onDataReceived(response.toString(),type);
     }
 }

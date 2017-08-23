@@ -12,5 +12,38 @@ public class MovieImage {
     private Integer height;
     private Integer width;
 
+    public Integer getAspectRatio() {
+        return aspectRatio;
+    }
+
+    public void setAspectRatio(Integer aspectRatio) {
+        this.aspectRatio = aspectRatio;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+
 }
 

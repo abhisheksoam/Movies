@@ -44,13 +44,33 @@ public class MovieModel implements Serializable {
     private CastModels movieCast;
     private MovieImages movieImages;
     private ArrayList<Trailer> movieTrailer;
-    private ArrayList<Integer> recommendationMovies;
-    private ArrayList<Integer> similarMovies;
+    private MovieModels recommendationMovies;
+    private MovieModels similarMovies;
 
+    public MovieModels getRecommendationMovies() {
+        return recommendationMovies;
+    }
 
+    public void setRecommendationMovies(MovieModels recommendationMovies) {
+        this.recommendationMovies = recommendationMovies;
+    }
+
+    public MovieModels getSimilarMovies() {
+        return similarMovies;
+    }
+
+    public void setSimilarMovies(MovieModels similarMovies) {
+        this.similarMovies = similarMovies;
+    }
 
     public MovieModel(){
         genreIds =  new ArrayList<>();
+        productionCompanies = new ArrayList<>();
+        productionCountries = new ArrayList<>();
+        spokenLanguages = new ArrayList<>();
+        genre = new ArrayList<>();
+        keywords = new ArrayList<>();
+        movieTrailer = new ArrayList<>();
     }
 
     public String getVideo() {
@@ -261,23 +281,5 @@ public class MovieModel implements Serializable {
     public void setMovieTrailer(ArrayList<Trailer> movieTrailer) {
         this.movieTrailer = movieTrailer;
     }
-
-    public ArrayList<Integer> getRecommendationMovies() {
-        return recommendationMovies;
-    }
-
-    public void setRecommendationMovies(ArrayList<Integer> recommendationMovies) {
-        this.recommendationMovies = recommendationMovies;
-    }
-
-    public ArrayList<Integer> getSimilarMovies() {
-        return similarMovies;
-    }
-
-    public void setSimilarMovies(ArrayList<Integer> similarMovies) {
-        this.similarMovies = similarMovies;
-    }
-
-
 
 }

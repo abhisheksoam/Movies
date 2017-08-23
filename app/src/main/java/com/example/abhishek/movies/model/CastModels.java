@@ -9,4 +9,34 @@ import java.util.ArrayList;
 public class CastModels {
     private Integer movieId;
     private ArrayList<CastModel> cast;
+
+    public CastModels(){
+        cast = new ArrayList<>();
+    }
+
+    public Integer getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Integer movieId) {
+        this.movieId = movieId;
+    }
+
+    public ArrayList<CastModel> getCast() {
+        return cast;
+    }
+
+    public void setCast(ArrayList<CastModel> cast) {
+        this.cast = cast;
+    }
+
+    public void addCast(CastModel castModel){
+        cast.add(castModel);
+    }
+
+    public CastModel getCastModel(int position){
+        return cast.get(position);
+    }
+
+
 }
