@@ -1,6 +1,7 @@
 package com.example.abhishek.movies.activity;
 
 import android.content.Intent;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +21,12 @@ import com.example.abhishek.movies.asyncTask.CustomRequest;
 import com.example.abhishek.movies.asyncTask.RestCallController;
 import com.example.abhishek.movies.model.CastModel;
 import com.example.abhishek.movies.model.CastModels;
+import com.example.abhishek.movies.model.CrewModel;
+import com.example.abhishek.movies.model.CrewModels;
 import com.example.abhishek.movies.model.MovieImage;
 import com.example.abhishek.movies.model.MovieImages;
 import com.example.abhishek.movies.model.MovieModel;
+import com.example.abhishek.movies.model.MovieModels;
 import com.example.abhishek.movies.model.Trailer;
 import com.squareup.picasso.Picasso;
 
@@ -201,6 +205,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             Log.e(TAG, response.toString());
             processSimilar(response);
         }
+//        Log.e(TAG,"Object Size ",+movieInfo.)
 
     }
 
@@ -266,11 +271,88 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         }
     }
 
-    private void processSimilar(JSONObject response) {
+    private void processSimilar(JSONObject object) {
+
+        MovieModels similarMovies = new MovieModels("Similar");
+        try {
+            JSONArray results = object.getJSONArray("results");
+            Log.e(TAG,"Size Of JSON ARRAY"+ results.length());
+
+            similarMovies.setCurrentPage(object.getInt("page"));
+            similarMovies.setTotalPage(object.getInt("total_pages"));
+            similarMovies.setTotalResults(object.getInt("total_results"));
+
+            for(int i=0;i<results.length();i++){
+                JSONObject obj = results.getJSONObject(i);
+                MovieModel movie = new MovieModel();
+                movie.setAdult(obj.optString("adult"));
+                movie.setBackdropPath(obj.optString("backdrop_path"));
+                movie.setId(obj.optInt("id"));
+                movie.setOriginalLanguage(obj.optString("original_language"));
+                movie.setPopularity(obj.optInt("popularity"));
+                movie.setOverview(obj.optString("overview"));
+                movie.setReleaseDate(obj.optString("release_date"));
+                movie.setTitle(obj.optString("title"));
+                movie.setOriginalTitle(obj.optString("original_title"));
+                movie.setPosterPath(obj.optString("poster_path"));
+                movie.setVoteAverage(obj.optInt("vote_average"));
+                movie.setVoteCount(obj.optInt("vote_count"));
+
+                JSONArray genreArray = obj.optJSONArray("genre_ids");
+
+                for(int j=0;j<genreArray.length();j++){
+                    movie.genreIds.add(genreArray.getInt(j));
+                }
+                similarMovies.list.add(movie);
+            }
+
+            movieInfo.setSimilarMovies(similarMovies);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void processRecommendations(JSONObject response) {
+    private void processRecommendations(JSONObject object) {
 
+            MovieModels recommendationMovies = new MovieModels("Recommendations");
+            try {
+                JSONArray results = object.getJSONArray("results");
+                Log.e(TAG,"Size Of JSON ARRAY"+ results.length());
+
+                recommendationMovies.setCurrentPage(object.getInt("page"));
+                recommendationMovies.setTotalPage(object.getInt("total_pages"));
+                recommendationMovies.setTotalResults(object.getInt("total_results"));
+
+                for(int i=0;i<results.length();i++){
+                    JSONObject obj = results.getJSONObject(i);
+                    MovieModel movie = new MovieModel();
+                    movie.setAdult(obj.optString("adult"));
+                    movie.setBackdropPath(obj.optString("backdrop_path"));
+                    movie.setId(obj.optInt("id"));
+                    movie.setOriginalLanguage(obj.optString("original_language"));
+                    movie.setPopularity(obj.optInt("popularity"));
+                    movie.setOverview(obj.optString("overview"));
+                    movie.setReleaseDate(obj.optString("release_date"));
+                    movie.setTitle(obj.optString("title"));
+                    movie.setOriginalTitle(obj.optString("original_title"));
+                    movie.setPosterPath(obj.optString("poster_path"));
+                    movie.setVoteAverage(obj.optInt("vote_average"));
+                    movie.setVoteCount(obj.optInt("vote_count"));
+
+                    JSONArray genreArray = obj.optJSONArray("genre_ids");
+
+                    for(int j=0;j<genreArray.length();j++){
+                        movie.genreIds.add(genreArray.getInt(j));
+                    }
+                    recommendationMovies.list.add(movie);
+                }
+
+                movieInfo.setRecommendationMovies(recommendationMovies);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
     private void processMovieDetail(JSONObject response) {
@@ -283,16 +365,50 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             JSONArray spokenLanguages = response.getJSONArray("spoken_language");
             JSONArray genre = response.getJSONArray("genre");
 
+            ArrayList<Pair<String,String>> productionCountriesList = new ArrayList<>();
+            ArrayList<Pair<String,String>> spokenLangugaeList = new ArrayList<>();
+            ArrayList<Pair<Integer,String>> genreList = new ArrayList<>();
+
+            for(int i=0;i<productionCountries.length();i++){
+                JSONObject object = productionCountries.getJSONObject(i);
+                Pair<String,String> pair = new Pair<>(object.getString("iso_3166_1"),object.getString("name"));
+                productionCountriesList.add(pair);
+            }
+
+            for(int i=0;i<spokenLanguages.length();i++){
+                JSONObject object = spokenLanguages.getJSONObject(i);
+                Pair<String,String> pair = new Pair<>(object.getString("iso_639_1"),object.getString("name"));
+                spokenLangugaeList.add(pair);
+            }
+
+            for(int i=0;i<genre.length();i++){
+                JSONObject object = genre.getJSONObject(i);
+                Pair<Integer,String> pair = new Pair<>(object.getInt("id"),object.getString("name"));
+                genreList.add(pair);
+            }
+
+            movieInfo.setProductionCountries(productionCountriesList);
+            movieInfo.setGenre(genreList);
+            movieInfo.setSpokenLanguages(spokenLangugaeList);
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+//        updateScreen(new Pair<TextView,Integer>(movieDuration,movieInfo.getRuntime()));
+
     }
+
 
     private void processCast(JSONObject response) {
         try {
             CastModels castModels = new CastModels();
+            CrewModels crewModels = new CrewModels();
             JSONArray cast = response.getJSONArray("cast");
+            JSONArray crew = response.getJSONArray("crew");
+
             castModels.setMovieId(response.getInt("id"));
+
             for(int i=0;i<cast.length();i++){
                 JSONObject object = cast.getJSONObject(i);
                 CastModel model = new CastModel();
@@ -307,10 +423,24 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
                 castModels.addCast(model);
             }
 
-
+            for(int i=0;i<crew.length();i++){
+                JSONObject object = new JSONObject();
+                CrewModel crewModel = new CrewModel();
+                crewModel.setCreditId(object.getString("credit_id"));
+                crewModel.setDepartment(object.getString("department"));
+                crewModel.setGender(object.getInt("gender"));
+                crewModel.setId(object.getInt("id"));
+                crewModel.setJob(object.getString("job"));
+                crewModel.setName(object.getString("name"));
+                crewModel.setProfile_path(object.getString("profile_path"));
+                crewModels.addCrew(crewModel);
+            }
+            movieInfo.setMovieCast(castModels);
+            movieInfo.setMovieCrew(crewModels);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
 }

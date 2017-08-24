@@ -33,19 +33,31 @@ public class MovieModel implements Serializable {
     private Integer revenue;
     private Integer runtime;
     private Integer budget;
+    // Pair Contains iso_3166_1, country name
     private ArrayList<Pair<String,String>> productionCountries;
     private ArrayList<Pair<String,Integer>> productionCompanies;
+    // Pair Contains iso_639_1, Langugae name
     private ArrayList<Pair<String,String>> spokenLanguages;
-    private ArrayList<Pair<String,Integer>> genre;
+    // Pair Contains id,name of the genre
+    private ArrayList<Pair<Integer,String>> genre;
     private ArrayList<Pair<String,Integer>> keywords;
 
     // Models
 
     private CastModels movieCast;
+    private CrewModels movieCrew;
     private MovieImages movieImages;
     private ArrayList<Trailer> movieTrailer;
     private MovieModels recommendationMovies;
     private MovieModels similarMovies;
+
+    public CrewModels getMovieCrew() {
+        return movieCrew;
+    }
+
+    public void setMovieCrew(CrewModels movieCrew) {
+        this.movieCrew = movieCrew;
+    }
 
     public MovieModels getRecommendationMovies() {
         return recommendationMovies;
@@ -242,11 +254,11 @@ public class MovieModel implements Serializable {
         this.spokenLanguages = spokenLanguages;
     }
 
-    public ArrayList<Pair<String, Integer>> getGenre() {
+    public ArrayList<Pair<Integer, String>> getGenre() {
         return genre;
     }
 
-    public void setGenre(ArrayList<Pair<String, Integer>> genre) {
+    public void setGenre(ArrayList<Pair<Integer, String>> genre) {
         this.genre = genre;
     }
 
