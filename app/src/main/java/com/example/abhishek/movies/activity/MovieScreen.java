@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +20,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.RestCallResponseInterface;
+import com.example.abhishek.movies.adapter.MovieCastRecyclerAdapter;
+import com.example.abhishek.movies.adapter.MovieImageAndNameAdapter;
+import com.example.abhishek.movies.adapter.UpcomingMovieRecyclerAdapter;
 import com.example.abhishek.movies.asyncTask.CustomRequest;
 import com.example.abhishek.movies.asyncTask.RestCallController;
 import com.example.abhishek.movies.model.CastModel;
@@ -28,6 +34,7 @@ import com.example.abhishek.movies.model.MovieImages;
 import com.example.abhishek.movies.model.MovieModel;
 import com.example.abhishek.movies.model.MovieModels;
 import com.example.abhishek.movies.model.Trailer;
+import com.example.abhishek.movies.utility.SpaceItemDecoration;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -48,10 +55,16 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
     private TextView movieDirector;
     private TextView movieWriter;
     private TextView movieSynopsis;
-    private RecyclerView movieCastRecyclerView;
-    private TextView movieAwardsAndNomination;
+
     private TextView movieGenre;
     private TextView movieName;
+
+    private RecyclerView movieCastRecyclerView;
+    private  LinearLayoutManager linearLayoutManager;
+
+    private RecyclerView similarMovieRecyclerView;
+    private LinearLayoutManager similarLinearLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +102,15 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         movieWriter = (TextView) findViewById(R.id.movie_screen_writer_textview);
         movieSynopsis = (TextView) findViewById(R.id.movie_screen_synopsis_textview);
         movieGenre = (TextView) findViewById(R.id.movie_screen_genre_textview);
-        movieAwardsAndNomination = (TextView) findViewById(R.id.movie_screen_awards_and_nomination_textview);
-        movieCastRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_cast_recycler_view);
         movieName = (TextView) findViewById(R.id.movie_screen_movie_name_textview);
+
+        movieCastRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_cast_recycler_view);
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        movieCastRecyclerView.setLayoutManager(linearLayoutManager);
+
+        similarMovieRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_similar_recycler_view);
+        similarLinearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        similarMovieRecyclerView.setLayoutManager(similarLinearLayoutManager);
 
     }
 
@@ -128,7 +147,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         /**
          *  Fetching Extra Movie Detail
          *  Sample URL:
-         *  https://api.themoviedb.org/3/movie/{movieId}?api_key=xyz
+         *  https://api.themoviedb.org/3/movie/190859?api_key=a0c307832b6d7d9d4fcf069b911f90c0
          */
         String movieDetailedURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieDetailedURL);
@@ -136,37 +155,55 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         customRequest.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest);
         /**
-         *  Fetching Extra Movie Detail
+         *  Fetching Movie Credits
          *  Sample URL:
-         *  https://api.themoviedb.org/3/movie/190859?api_key=a0c307832b6d7d9d4fcf069b911f90c0
+         *  https://api.themoviedb.org/3/movie/190859/credits?api_key=a0c307832b6d7d9d4fcf069b911f90c0
          */
         String movieCastURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "/credits?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieCastURL);
         CustomRequest customRequest1 = new CustomRequest(Request.Method.GET, movieCastURL, null, this, "CastInfo", this);
         customRequest1.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest1);
-
+        /**
+         *  Fetching Movie Videos
+         *  Sample URL:
+         *  https://api.themoviedb.org/3/movie/190859/videos?api_key=a0c307832b6d7d9d4fcf069b911f90c0
+         */
         String movieVideoURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "/videos?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieVideoURL);
-        CustomRequest customRequest2 = new CustomRequest(Request.Method.GET, movieCastURL, null, this, "Videos", this);
+        CustomRequest customRequest2 = new CustomRequest(Request.Method.GET, movieVideoURL, null, this, "Videos", this);
         customRequest2.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest2);
-
+        /**
+         *  Fetching Movie Images
+         *  Sample URL:
+         *  https://api.themoviedb.org/3/movie/190859/images?api_key=a0c307832b6d7d9d4fcf069b911f90c0
+         */
         String movieImageURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "/images?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieImageURL);
-        CustomRequest customRequest3 = new CustomRequest(Request.Method.GET, movieCastURL, null, this, "Images", this);
+        CustomRequest customRequest3 = new CustomRequest(Request.Method.GET, movieImageURL, null, this, "Images", this);
         customRequest3.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest3);
 
+        /**
+         *  Fetching Similar Movies
+         *  Sample URL:
+         *  https://api.themoviedb.org/3/movie/190859/similar?api_key=a0c307832b6d7d9d4fcf069b911f90c0
+         */
         String movieSimilarURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "/similar?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieSimilarURL);
-        CustomRequest customRequest4 = new CustomRequest(Request.Method.GET, movieCastURL, null, this, "Similar", this);
+        CustomRequest customRequest4 = new CustomRequest(Request.Method.GET, movieSimilarURL, null, this, "Similar", this);
         customRequest4.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest4);
 
+        /**
+         *  Fetching Recommendation Movies
+         *  Sample URL:
+         *  https://api.themoviedb.org/3/movie/190859/recommendations?api_key=a0c307832b6d7d9d4fcf069b911f90c0
+         */
         String movieRecommendationURL = "https://api.themoviedb.org/3/movie/" + movieInfo.getId() + "/recommendations?api_key=a0c307832b6d7d9d4fcf069b911f90c0";
         Log.e(TAG, movieRecommendationURL);
-        CustomRequest customRequest5 = new CustomRequest(Request.Method.GET, movieCastURL, null, this, "Recommendations", this);
+        CustomRequest customRequest5 = new CustomRequest(Request.Method.GET, movieRecommendationURL, null, this, "Recommendations", this);
         customRequest5.setRestCallResponseInterface(this);
         RestCallController.getInstance().addToRequestQueue(customRequest5);
 
@@ -272,7 +309,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
     }
 
     private void processSimilar(JSONObject object) {
-
+        Log.e("Processing Similar","True");
         MovieModels similarMovies = new MovieModels("Similar");
         try {
             JSONArray results = object.getJSONArray("results");
@@ -308,9 +345,16 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
 
             movieInfo.setSimilarMovies(similarMovies);
 
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        // Setting Recycler View for the similar Movies
+        MovieImageAndNameAdapter similarUpcomingMovieAdapter = new MovieImageAndNameAdapter(this,similarMovies);
+        similarMovieRecyclerView.setAdapter(similarUpcomingMovieAdapter);
+        similarMovieRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
+        Log.e("Processing Similar","Recycler Is Added");
     }
 
     private void processRecommendations(JSONObject object) {
@@ -362,8 +406,8 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             movieInfo.setRuntime(response.getInt("runtime"));
             movieInfo.setBudget(response.getInt("budget"));
             JSONArray productionCountries = response.getJSONArray("production_countries");
-            JSONArray spokenLanguages = response.getJSONArray("spoken_language");
-            JSONArray genre = response.getJSONArray("genre");
+            JSONArray spokenLanguages = response.getJSONArray("spoken_languages");
+            JSONArray genre = response.getJSONArray("genres");
 
             ArrayList<Pair<String,String>> productionCountriesList = new ArrayList<>();
             ArrayList<Pair<String,String>> spokenLangugaeList = new ArrayList<>();
@@ -399,48 +443,86 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
 
     }
 
-
     private void processCast(JSONObject response) {
         try {
             CastModels castModels = new CastModels();
             CrewModels crewModels = new CrewModels();
             JSONArray cast = response.getJSONArray("cast");
             JSONArray crew = response.getJSONArray("crew");
-
             castModels.setMovieId(response.getInt("id"));
 
             for(int i=0;i<cast.length();i++){
                 JSONObject object = cast.getJSONObject(i);
                 CastModel model = new CastModel();
-                model.setName(object.getString("name"));
-                model.setOrder(object.getInt("order"));
-                model.setGender(object.getInt("gender"));
-                model.setCreditId(object.getString("credit_id"));
-                model.setCharacterName(object.getString("character"));
-                model.setCastId(object.getInt("cast_id"));
-                model.setId(object.getInt("id"));
-                model.setProfilePath(object.getString("profile_path"));
+                model.setName(object.optString("name"));
+                model.setOrder(object.optInt("order"));
+                model.setGender(object.optInt("gender"));
+                model.setCreditId(object.optString("credit_id"));
+                model.setCharacterName(object.optString("character"));
+                model.setCastId(object.optInt("cast_id"));
+                model.setId(object.optInt("id"));
+                model.setProfilePath(object.optString("profile_path"));
                 castModels.addCast(model);
             }
 
             for(int i=0;i<crew.length();i++){
-                JSONObject object = new JSONObject();
+                JSONObject object = crew.getJSONObject(i);
                 CrewModel crewModel = new CrewModel();
-                crewModel.setCreditId(object.getString("credit_id"));
-                crewModel.setDepartment(object.getString("department"));
-                crewModel.setGender(object.getInt("gender"));
-                crewModel.setId(object.getInt("id"));
-                crewModel.setJob(object.getString("job"));
-                crewModel.setName(object.getString("name"));
-                crewModel.setProfile_path(object.getString("profile_path"));
+                crewModel.setCreditId(object.optString("credit_id"));
+                crewModel.setDepartment(object.optString("department"));
+                crewModel.setGender(object.optInt("gender"));
+                crewModel.setId(object.optInt("id"));
+                crewModel.setJob(object.optString("job"));
+                crewModel.setName(object.optString("name"));
+                crewModel.setProfile_path(object.optString("profile_path"));
                 crewModels.addCrew(crewModel);
+
             }
+
             movieInfo.setMovieCast(castModels);
             movieInfo.setMovieCrew(crewModels);
 
+            ArrayList<CrewModel> crewModelArrayList = movieInfo.getMovieCrew().getList();
+            ArrayList<String> directors = new ArrayList<>();
+            ArrayList<String> writers = new ArrayList<>();
+            Log.e("Crew model size",crewModelArrayList.size()+" ");
+            for(int i=0;i<crewModelArrayList.size();i++){
+                CrewModel model = crewModelArrayList.get(i);
+                if(model.getJob().equals("Director")){
+                    directors.add(model.getName());
+                }
+                else if(model.getJob().equals("Writer")){
+                    writers.add(model.getName());
+                }
+            }
+
+            // Setting Text for Directors and Movie Text View
+//            for(int i=0;i<directors.size();i++){
+//                if(i!=directors.size()-1){
+//                    movieDirector.setText(directors.get(i)+", ");
+//                }else{
+//                    movieDirector.setText(directors.get(i));
+//                }
+//            }
+//
+//            for(int i=0;i<writers.size();i++){
+//                if(i!=directors.size()-1){
+//                    movieWriter.setText(directors.get(i)+", ");
+//                }else{
+//                    movieWriter.setText(directors.get(i));
+//                }
+//            }
+
+            // Setting Cast Recycler View
+            MovieCastRecyclerAdapter adapter = new MovieCastRecyclerAdapter(this,movieInfo.getMovieCast());
+            movieCastRecyclerView.setAdapter(adapter);
+
+
         } catch (JSONException e) {
-            e.printStackTrace();
+            System.out.println("Error " + e.getMessage());
         }
+
+
     }
 
 }

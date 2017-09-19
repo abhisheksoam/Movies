@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class MovieModels {
 
 
+
     private String type;
     public ArrayList<MovieModel> list;
     private Integer currentPage;
@@ -46,4 +47,11 @@ public class MovieModels {
         this.totalResults = totalResults;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

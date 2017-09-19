@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.abhishek.movies.R;
-import com.example.abhishek.movies._interface.ReceiveBitmapInterface;
+
 import com.example.abhishek.movies.activity.MovieScreen;
 import com.example.abhishek.movies.activity.SearchActivity;
 import com.example.abhishek.movies.model.MovieModel;
@@ -35,11 +35,12 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
     private Context context;
     private LayoutInflater layoutInflater;
     private MovieModels movies;
-    ReceiveBitmapInterface receiveBitmapInterface;
     private String TAG = "UPCOMING_ADAPTER";
 
     public UpcomingMovieRecyclerAdapter(Context context, MovieModels movieModel){
         Log.e(TAG,"Inside constuctor");
+        Log.e(TAG,"Movie Type: "+ movieModel.getType());
+        Log.e(TAG,"Movie List Size: "+ movieModel.list.size());
         this.context = context;
         this.movies = movieModel;
         layoutInflater =  LayoutInflater.from(context);
@@ -55,7 +56,6 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Log.e(TAG,"Bind view holder");
         holder.setIsRecyclable(false);
         MovieModel model = movies.list.get(position);
 
@@ -94,14 +94,7 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
                     context.startActivity(intent);
                 }
             });
-//            movieNameTextView = (TextView) itemView.findViewById(R.id.upcoming_movie_name);
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    context.startActivity(new Intent(context, SearchActivity.class));
-//                    return false;
-//                }
-//            });
+
 
         }
     }

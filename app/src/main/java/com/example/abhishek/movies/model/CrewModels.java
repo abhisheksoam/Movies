@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public class CrewModels {
+
     private ArrayList<CrewModel> list;
 
     public CrewModels(){
@@ -19,6 +20,10 @@ public class CrewModels {
 
     public CrewModel getCrewModel(int position){
         return list.get(position);
+    }
+
+    public ArrayList<CrewModel> getList() {
+        return list;
     }
 
 

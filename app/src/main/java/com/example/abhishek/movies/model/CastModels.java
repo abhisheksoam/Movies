@@ -38,5 +38,8 @@ public class CastModels {
         return cast.get(position);
     }
 
+    public int getCastSize(){
+        return cast.size();
+    }
 
 }

@@ -27,6 +27,9 @@ public class MovieModel implements Serializable {
     private String adult;
     private String video;
 
+    private ArrayList<String> director;
+    private ArrayList<String> writer;
+
     // Extra Field
 
     private String imdbId;
@@ -51,6 +54,29 @@ public class MovieModel implements Serializable {
     private MovieModels recommendationMovies;
     private MovieModels similarMovies;
 
+
+    public MovieModel(){
+        genreIds =  new ArrayList<>();
+        productionCompanies = new ArrayList<>();
+        productionCountries = new ArrayList<>();
+        spokenLanguages = new ArrayList<>();
+        genre = new ArrayList<>();
+        keywords = new ArrayList<>();
+        movieTrailer = new ArrayList<>();
+        director = new ArrayList<>();
+        writer = new ArrayList<>();
+    }
+
+
+
+
+
+
+
+
+
+
+
     public CrewModels getMovieCrew() {
         return movieCrew;
     }
@@ -73,16 +99,6 @@ public class MovieModel implements Serializable {
 
     public void setSimilarMovies(MovieModels similarMovies) {
         this.similarMovies = similarMovies;
-    }
-
-    public MovieModel(){
-        genreIds =  new ArrayList<>();
-        productionCompanies = new ArrayList<>();
-        productionCountries = new ArrayList<>();
-        spokenLanguages = new ArrayList<>();
-        genre = new ArrayList<>();
-        keywords = new ArrayList<>();
-        movieTrailer = new ArrayList<>();
     }
 
     public String getVideo() {
@@ -294,4 +310,19 @@ public class MovieModel implements Serializable {
         this.movieTrailer = movieTrailer;
     }
 
+    public ArrayList<String> getDirector() {
+        return director;
+    }
+
+    public void setDirector(ArrayList<String> director) {
+        this.director = director;
+    }
+
+    public ArrayList<String> getWriter() {
+        return writer;
+    }
+
+    public void setWriter(ArrayList<String> writer) {
+        this.writer = writer;
+    }
 }
