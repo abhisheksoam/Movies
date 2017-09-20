@@ -3,7 +3,8 @@
     package="com.example.abhishek.movies">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--<application android:name=".asyncTask.RestCallController">-->
+
+    <!-- <application android:name=".asyncTask.RestCallController"> -->
     <application
         android:name=".asyncTask.RestCallController"
         android:allowBackup="true"
@@ -11,19 +12,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomeActivity"
+        <activity
+            android:name=".HomeActivity"
             android:launchMode="singleTop">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -32,16 +31,22 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity android:name=".activity.MovieScreen" />
-
-        <activity android:name=".activity.SearchActivity">
-        </activity>
-
+        <activity android:name=".activity.SearchActivity" />
         <activity
             android:name=".activity.UniversalDrawerActivity"
             android:label="@string/title_activity_universal_drawer"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.ImageActivity"
+            android:label="@string/title_activity_image"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.MovieImageActivity"
+            android:label="@string/title_activity_movie_image" />
+        <activity
+            android:name=".activity.ImageDemoActivity"
+            android:label="@string/title_activity_image_demo"></activity>
     </application>
 
 </manifest>

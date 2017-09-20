@@ -1,12 +1,13 @@
 package com.example.abhishek.movies.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by abhishek on 13/08/17.
  */
 
-public class MovieImages {
+public class MovieImages implements Serializable {
     private ArrayList<MovieImage> posterPath;
     private ArrayList<MovieImage> backdropPaths;
     private Integer movieId;

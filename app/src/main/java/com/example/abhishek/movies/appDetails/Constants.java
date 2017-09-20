@@ -68,7 +68,7 @@ public class Constants {
 
 
     // API key for YouTube API
-    public static final String DEVELOPER_KEY = "AIzaSyDDACz2R7Js8aQZ0xHGbfCra46qQBEDmyU";
+    public static final String YOUTUBE_DEVELOPER_KEY = "AIzaSyDu_llIkDfW3ssmgRwvqLjZW99WS2tHLpI";
 
     // For BollyWood movies
     public static final String AUTH_TOKEN="290A700988F8E7F5C66944B4083607AD";

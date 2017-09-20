@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.example.abhishek.movies.R;
 import com.example.abhishek.movies._interface.RestCallResponseInterface;
 import com.example.abhishek.movies.adapter.MovieCastRecyclerAdapter;
 import com.example.abhishek.movies.adapter.MovieImageAndNameAdapter;
+import com.example.abhishek.movies.adapter.MovieSpecificImageAdapter;
 import com.example.abhishek.movies.adapter.UpcomingMovieRecyclerAdapter;
 import com.example.abhishek.movies.asyncTask.CustomRequest;
 import com.example.abhishek.movies.asyncTask.RestCallController;
@@ -58,6 +60,9 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
 
     private TextView movieGenre;
     private TextView movieName;
+    private TextView imageViewAll;
+
+    private ImageView videoPreview;
 
     private RecyclerView movieCastRecyclerView;
     private  LinearLayoutManager linearLayoutManager;
@@ -65,6 +70,11 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
     private RecyclerView similarMovieRecyclerView;
     private LinearLayoutManager similarLinearLayoutManager;
 
+    private RecyclerView recommendationMoviesRecyclerView;
+    private LinearLayoutManager recommendationLinearLayoutManager;
+
+    private RecyclerView movieSpecificImageRecyclerView;
+    private LinearLayoutManager movieSpecificImageLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +113,8 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         movieSynopsis = (TextView) findViewById(R.id.movie_screen_synopsis_textview);
         movieGenre = (TextView) findViewById(R.id.movie_screen_genre_textview);
         movieName = (TextView) findViewById(R.id.movie_screen_movie_name_textview);
+        imageViewAll = (TextView) findViewById(R.id.movie_screen_view_all_textview);
+        videoPreview = (ImageView) findViewById(R.id.movie_screen_video_play_image_view);
 
         movieCastRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_cast_recycler_view);
         linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
@@ -111,6 +123,22 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
         similarMovieRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_similar_recycler_view);
         similarLinearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         similarMovieRecyclerView.setLayoutManager(similarLinearLayoutManager);
+
+        recommendationMoviesRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_recommendations_recycler_view);
+        recommendationLinearLayoutManager =  new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        recommendationMoviesRecyclerView.setLayoutManager(recommendationLinearLayoutManager);
+
+        movieSpecificImageRecyclerView = (RecyclerView) findViewById(R.id.movie_screen_images_recycler_view);
+        movieSpecificImageLinearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        movieSpecificImageRecyclerView.setLayoutManager(movieSpecificImageLinearLayoutManager);
+
+        // On Click For Widgets
+        imageViewAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//            startActivity(new Intent(MovieScreen.this,ImageDemoActivity.class));
+            }
+        });
 
     }
 
@@ -219,30 +247,23 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
     public void onResponse(String type, JSONObject response) {
         if (type == "MovieInfo") {
             Log.e(TAG, "Movie Detail");
-            Log.e(TAG, response.toString());
             processMovieDetail(response);
         } else if (type == "CastInfo") {
             Log.e(TAG, "Cast");
-            Log.e(TAG, response.toString());
             processCast(response);
         } else if(type == "Recommendations"){
             Log.e(TAG,"Recommendations");
-            Log.e(TAG, response.toString());
             processRecommendations(response);
         } else if(type == "Videos"){
             Log.e(TAG,"Videos");
-            Log.e(TAG, response.toString());
             processVideos(response);
         } else if(type == "Images"){
             Log.e(TAG,"Images");
-            Log.e(TAG, response.toString());
             processImages(response);
         } else if(type == "Similar"){
             Log.e(TAG,"Similar");
-            Log.e(TAG, response.toString());
             processSimilar(response);
         }
-//        Log.e(TAG,"Object Size ",+movieInfo.)
 
     }
 
@@ -254,6 +275,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             Integer movieId = response.getInt("id") ;
             JSONArray backdrops = response.getJSONArray("backdrops");
             JSONArray posters = response.getJSONArray("posters");
+            Log.e("Images Length",backdrops.length()+", "+posters.length());
 
             for(int i=0;i<backdrops.length();i++){
                 JSONObject object = backdrops.getJSONObject(i);
@@ -282,6 +304,11 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             // Setting MovieInfo Model
             movieInfo.setMovieImages(movieImages);
 
+            // Setting Cast Recycler View
+            MovieSpecificImageAdapter adapter = new MovieSpecificImageAdapter(this,movieInfo);
+            movieSpecificImageRecyclerView.setAdapter(adapter);
+            movieSpecificImageRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -303,6 +330,11 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
                 trailer.setType(object.getString("type"));
                 movieInfo.getMovieTrailer().add(trailer);
             }
+
+            if(results.length()>0){
+                videoPreview.setVisibility(View.VISIBLE);
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -397,6 +429,12 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+        // Setting Recycler View for the similar Movies
+        MovieImageAndNameAdapter similarUpcomingMovieAdapter = new MovieImageAndNameAdapter(this,recommendationMovies);
+        recommendationMoviesRecyclerView.setAdapter(similarUpcomingMovieAdapter);
+        recommendationMoviesRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
+
     }
 
     private void processMovieDetail(JSONObject response) {
@@ -412,6 +450,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             ArrayList<Pair<String,String>> productionCountriesList = new ArrayList<>();
             ArrayList<Pair<String,String>> spokenLangugaeList = new ArrayList<>();
             ArrayList<Pair<Integer,String>> genreList = new ArrayList<>();
+            ArrayList<String> genreName = new ArrayList<>();
 
             for(int i=0;i<productionCountries.length();i++){
                 JSONObject object = productionCountries.getJSONObject(i);
@@ -429,17 +468,21 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
                 JSONObject object = genre.getJSONObject(i);
                 Pair<Integer,String> pair = new Pair<>(object.getInt("id"),object.getString("name"));
                 genreList.add(pair);
+                genreName.add(object.getString("name"));
             }
 
             movieInfo.setProductionCountries(productionCountriesList);
             movieInfo.setGenre(genreList);
             movieInfo.setSpokenLanguages(spokenLangugaeList);
 
+            movieGenre.setText(android.text.TextUtils.join(",",genreName));
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-//        updateScreen(new Pair<TextView,Integer>(movieDuration,movieInfo.getRuntime()));
+        movieDuration.setText(movieInfo.getRuntime()+" ");
+
+
 
     }
 
@@ -464,6 +507,8 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
                 model.setProfilePath(object.optString("profile_path"));
                 castModels.addCast(model);
             }
+            ArrayList<String> directors = new ArrayList<>();
+            ArrayList<String> writers = new ArrayList<>();
 
             for(int i=0;i<crew.length();i++){
                 JSONObject object = crew.getJSONObject(i);
@@ -477,45 +522,28 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
                 crewModel.setProfile_path(object.optString("profile_path"));
                 crewModels.addCrew(crewModel);
 
+                if(crewModel.getJob().equals("Director")){
+                    directors.add(crewModel.getName());
+                }
+                else if(crewModel.getJob().equals("Writer")){
+                    writers.add(crewModel.getName());
+                }
+
             }
 
             movieInfo.setMovieCast(castModels);
             movieInfo.setMovieCrew(crewModels);
 
-            ArrayList<CrewModel> crewModelArrayList = movieInfo.getMovieCrew().getList();
-            ArrayList<String> directors = new ArrayList<>();
-            ArrayList<String> writers = new ArrayList<>();
-            Log.e("Crew model size",crewModelArrayList.size()+" ");
-            for(int i=0;i<crewModelArrayList.size();i++){
-                CrewModel model = crewModelArrayList.get(i);
-                if(model.getJob().equals("Director")){
-                    directors.add(model.getName());
-                }
-                else if(model.getJob().equals("Writer")){
-                    writers.add(model.getName());
-                }
-            }
+
 
             // Setting Text for Directors and Movie Text View
-//            for(int i=0;i<directors.size();i++){
-//                if(i!=directors.size()-1){
-//                    movieDirector.setText(directors.get(i)+", ");
-//                }else{
-//                    movieDirector.setText(directors.get(i));
-//                }
-//            }
-//
-//            for(int i=0;i<writers.size();i++){
-//                if(i!=directors.size()-1){
-//                    movieWriter.setText(directors.get(i)+", ");
-//                }else{
-//                    movieWriter.setText(directors.get(i));
-//                }
-//            }
+            movieDirector.setText(android.text.TextUtils.join(",",directors));
+            movieWriter.setText(android.text.TextUtils.join(",",writers));
 
             // Setting Cast Recycler View
             MovieCastRecyclerAdapter adapter = new MovieCastRecyclerAdapter(this,movieInfo.getMovieCast());
             movieCastRecyclerView.setAdapter(adapter);
+            movieCastRecyclerView.addItemDecoration(new SpaceItemDecoration(5));
 
 
         } catch (JSONException e) {

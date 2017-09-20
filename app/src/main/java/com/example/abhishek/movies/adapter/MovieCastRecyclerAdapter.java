@@ -37,6 +37,10 @@ public class MovieCastRecyclerAdapter extends RecyclerView.Adapter<MovieCastRecy
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.cast_row_item_layout,null,false);
+        int height = parent.getMeasuredHeight() / 4;
+        int width = parent.getMeasuredWidth() / 4;
+        view.setMinimumHeight(height);
+        view.setMinimumWidth(width);
         ItemViewHolder holder = new ItemViewHolder(view);
         return holder;
     }

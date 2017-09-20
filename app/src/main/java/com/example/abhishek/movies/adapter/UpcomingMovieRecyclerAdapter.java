@@ -41,9 +41,9 @@ public class UpcomingMovieRecyclerAdapter extends RecyclerView.Adapter<UpcomingM
         Log.e(TAG,"Inside constuctor");
         Log.e(TAG,"Movie Type: "+ movieModel.getType());
         Log.e(TAG,"Movie List Size: "+ movieModel.list.size());
-        this.context = context;
         this.movies = movieModel;
         layoutInflater =  LayoutInflater.from(context);
+        this.context = context;
     }
 
 
