@@ -140,6 +140,15 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             }
         });
 
+        videoPreview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MovieScreen.this,VideoPlay.class);
+                intent.putExtra("video_detail",movieInfo.getMovieTrailer());
+                startActivity(intent);
+            }
+        });
+
     }
 
     /**
@@ -334,6 +343,7 @@ public class MovieScreen extends AppCompatActivity implements Response.ErrorList
             if(results.length()>0){
                 videoPreview.setVisibility(View.VISIBLE);
             }
+
 
         } catch (JSONException e) {
             e.printStackTrace();

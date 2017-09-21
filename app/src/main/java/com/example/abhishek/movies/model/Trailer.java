@@ -1,10 +1,12 @@
 package com.example.abhishek.movies.model;
 
+import java.io.Serializable;
+
 /**
  * Created by abhishek on 13/08/17.
  */
 
-public class Trailer {
+public class Trailer implements Serializable {
     private String id;
     private String iso_639_1;
     private String iso_3166_1;
